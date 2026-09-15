@@ -208,9 +208,16 @@
       buildGlassCss(navAlpha, navBlur, cardAlpha, cardBlur),
     )
 
-    // 先挂观察器再执行首次标记，避免首屏卡片漏标
+    // 先挂观察器再执行首次标记，避免首屏卡片漏标。
+    // 同时监听 class/style 变化：点击选中、悬停等状态切换会改变元素背景，
+    // 仅监听 childList 会导致“已存在元素”漏标，出现点击后失去毛玻璃效果的问题
     glassObserver = new MutationObserver(() => window.requestAnimationFrame(markCards))
-    glassObserver.observe(document.body, { childList: true, subtree: true })
+    glassObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["class", "style"],
+    })
     // 首次渲染可能晚于插件加载，延迟一轮后再标记一次
     window.setTimeout(markCards, 0)
     window.setTimeout(markCards, 500)

@@ -1,7 +1,7 @@
 {
   "id": "oplist-plugin-bg-glass",
   "name": "自定义背景与毛玻璃",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "为 OpenListNext 页面自定义背景（纯色 / 图片 / 渐变，支持透明度与模糊），并可为原有卡片与顶部导航栏一键套用毛玻璃（透明度 + 模糊）效果。",
   "author": "OpenListDev",
   "homepage": "https://openlistnext.org",
@@ -73,15 +73,15 @@
       "key": "nav_opacity",
       "label": "导航栏透明度 (0-100)",
       "type": "number",
-      "defaultValue": 60,
-      "description": "顶部导航栏背景不透明度，数值越小越透"
+      "defaultValue": 0,
+      "description": "顶部导航栏背景不透明度，数值越小越透（默认全透明）"
     },
     {
       "key": "nav_blur",
       "label": "导航栏模糊 (px)",
       "type": "number",
-      "defaultValue": 12,
-      "description": "顶部导航栏背景高斯模糊半径"
+      "defaultValue": 0,
+      "description": "顶部导航栏背景高斯模糊半径（默认无模糊）"
     },
     {
       "key": "card_opacity",
@@ -114,8 +114,8 @@
     "bg_opacity": 100,
     "bg_blur": 0,
     "enable_panel": true,
-    "nav_opacity": 60,
-    "nav_blur": 12,
+    "nav_opacity": 0,
+    "nav_blur": 0,
     "card_opacity": 60,
     "card_blur": 12,
     "custom_selectors": ""
