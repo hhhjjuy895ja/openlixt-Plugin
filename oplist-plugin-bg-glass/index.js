@@ -3,6 +3,7 @@
 
   const LAYER_CLASS = "oplist-bg-glass-layer"
   const GLASS_ATTR = "data-oplist-glass"
+  const GLASS_BG_ATTR = "data-oplist-glass-bg" // 渐变背景卡片的清图标记
 
   /* 解析 "中文 (value)" 形式的下拉选项，提取括号内的机器值 */
   function parseOption(raw, fallback) {
@@ -64,9 +65,11 @@
 
   // 这些元素不参与卡片标记，避免影响交互与弹层
   const GLASS_IGNORED = [
-    "body",
     "html",
+    "body",
     "." + LAYER_CLASS,
+    ".hope-ui-light", // 主题根容器自身不成卡片
+    ".hope-ui-dark",
     ".header",
     ".nav",
     ".hope-tooltip",
@@ -100,19 +103,63 @@
     )
   }
 
+  /* 判断是否为“有表面背景”的元素（即卡片/面板）：
+     1) 有非透明背景色；2) 卡片形态（有内边距或圆角）且带渐变/图片背景 */
+  function isSurface(el, cs) {
+    const bgColor = cs.backgroundColor
+    const hasColor =
+      bgColor && bgColor !== "transparent" && bgColor !== "rgba(0, 0, 0, 0)"
+    if (hasColor) return { glass: true, clearBgImage: false }
+
+    const bgImage = cs.backgroundImage
+    const looksCard = cs.paddingTop !== "0px" || cs.borderRadius !== "0px"
+    if (bgImage && bgImage !== "none" && looksCard)
+      return { glass: true, clearBgImage: true }
+    return null
+  }
+
+  /* 找出页面中所有卡片/面板元素，标记为毛玻璃 */
+  function markCards() {
+    document.querySelectorAll(".hope-ui-light, .hope-ui-dark").forEach((themeRoot) => {
+      themeRoot.querySelectorAll("*").forEach((el) => {
+        if (shouldIgnore(el)) {
+          el.removeAttribute(GLASS_ATTR)
+          el.removeAttribute(GLASS_BG_ATTR)
+          return
+        }
+        const surface = isSurface(el, getComputedStyle(el))
+        if (surface) {
+          el.setAttribute(GLASS_ATTR, "true")
+          if (surface.clearBgImage) el.setAttribute(GLASS_BG_ATTR, "true")
+        }
+      })
+    })
+  }
+
+  /* 用户额外指定的选择器（兜底自动识别遗漏的元素） */
+  function customSelectorCss() {
+    const sels = String(config.custom_selectors || "")
+      .split(",")
+      .map(function (s) {
+        return s.trim()
+      })
+      .filter(Boolean)
+    if (!sels.length) return ""
+    const join = sels.join(", ")
+    return (
+      join +
+      " { background-color: var(--oplist-card-bg-light) !important; backdrop-filter: blur(var(--oplist-card-blur)) !important; -webkit-backdrop-filter: blur(var(--oplist-card-blur)) !important; }" +
+      "@media (prefers-color-scheme: dark) { " +
+      join +
+      " { background-color: var(--oplist-card-bg-dark) !important; } }"
+    )
+  }
+
   function buildGlassCss(navAlpha, navBlur, cardAlpha, cardBlur) {
     // 深浅色分别使用对应底色，通过 CSS 变量自动切换
     return (
       `
       .hope-ui-light, .hope-ui-dark { background-color: transparent !important; }
-      :root {
-        --oplist-nav-bg-light: rgba(255, 255, 255, ${navAlpha});
-        --oplist-nav-bg-dark: rgba(21, 23, 24, ${navAlpha});
-        --oplist-nav-blur: ${navBlur}px;
-        --oplist-card-bg-light: rgba(255, 255, 255, ${cardAlpha});
-        --oplist-card-bg-dark: rgba(21, 23, 24, ${cardAlpha});
-        --oplist-card-blur: ${cardBlur}px;
-      }
       .header, .nav {
         background-color: var(--oplist-nav-bg-light) !important;
         backdrop-filter: blur(var(--oplist-nav-blur)) !important;
@@ -123,6 +170,8 @@
         backdrop-filter: blur(var(--oplist-card-blur)) !important;
         -webkit-backdrop-filter: blur(var(--oplist-card-blur)) !important;
       }
+      /* 渐变背景的卡片清除图片层，使透明度真正生效 */
+      [${GLASS_BG_ATTR}="true"] { background-image: none !important; }
       @media (prefers-color-scheme: dark) {
         .header, .nav {
           background-color: var(--oplist-nav-bg-dark) !important;
@@ -131,28 +180,16 @@
           background-color: var(--oplist-card-bg-dark) !important;
         }
       }
-      `
+      :root {
+        --oplist-nav-bg-light: rgba(255, 255, 255, ${navAlpha});
+        --oplist-nav-bg-dark: rgba(21, 23, 24, ${navAlpha});
+        --oplist-nav-blur: ${navBlur}px;
+        --oplist-card-bg-light: rgba(255, 255, 255, ${cardAlpha});
+        --oplist-card-bg-dark: rgba(21, 23, 24, ${cardAlpha});
+        --oplist-card-blur: ${cardBlur}px;
+      }
+      ` + customSelectorCss()
     ).trim()
-  }
-
-  /* 找出页面中所有“有实色背景”的元素（即原有卡片），标记为毛玻璃 */
-  function markCards() {
-    if (glassObserver === null) return
-    document.querySelectorAll(".hope-ui-light, .hope-ui-dark").forEach((themeRoot) => {
-      themeRoot.querySelectorAll("*").forEach((el) => {
-        if (
-          shouldIgnore(el) ||
-          el.closest("[" + GLASS_ATTR + "]")
-        ) {
-          el.removeAttribute(GLASS_ATTR)
-          return
-        }
-        const bg = getComputedStyle(el).backgroundColor
-        if (bg && bg !== "transparent" && bg !== "rgba(0, 0, 0, 0)") {
-          el.setAttribute(GLASS_ATTR, "true")
-        }
-      })
-    })
   }
 
   function initGlass() {
@@ -166,12 +203,17 @@
     const cardAlpha = clamp(config.card_opacity, 0, 100) / 100
     const cardBlur = Math.max(0, Number(config.card_blur) || 0)
 
-    OpenListPlugin.injectCSS("oplist-bg-glass-theme", buildGlassCss(navAlpha, navBlur, cardAlpha, cardBlur))
+    OpenListPlugin.injectCSS(
+      "oplist-bg-glass-theme",
+      buildGlassCss(navAlpha, navBlur, cardAlpha, cardBlur),
+    )
 
-    markCards()
-    // 文件列表为前端动态渲染，DOM 变化时重新标记
+    // 先挂观察器再执行首次标记，避免首屏卡片漏标
     glassObserver = new MutationObserver(() => window.requestAnimationFrame(markCards))
     glassObserver.observe(document.body, { childList: true, subtree: true })
+    // 首次渲染可能晚于插件加载，延迟一轮后再标记一次
+    window.setTimeout(markCards, 0)
+    window.setTimeout(markCards, 500)
   }
 
   /* ============ 启动插件 ============ */
