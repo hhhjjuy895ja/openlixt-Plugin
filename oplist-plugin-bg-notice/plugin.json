@@ -1,0 +1,114 @@
+{
+  "id": "oplist-plugin-bg-notice",
+  "name": "自定义背景与公告",
+  "version": "1.0.0",
+  "description": "为 OpenListNext 页面自定义背景（纯色 / 图片 / 渐变，支持透明度与模糊），并在页面上展示可关闭的公告通知挂件。",
+  "author": "OpenListDev",
+  "homepage": "https://openlistnext.org",
+  "repository": "https://github.com/openlistnext/plugin-bg-notice",
+  "type": "ui",
+  "enabled": true,
+  "high_privilege": false,
+  "permissions": ["dom:inject"],
+  "tags": ["主题", "背景", "公告", "美化", "UI"],
+  "config_schema": [
+    {
+      "key": "enable_background",
+      "label": "启用自定义背景",
+      "type": "bool",
+      "defaultValue": true,
+      "description": "开启后覆盖系统默认页面背景"
+    },
+    {
+      "key": "bg_type",
+      "label": "背景类型",
+      "type": "select",
+      "options": ["纯色 (color)", "图片 (image)", "渐变 (gradient)"],
+      "defaultValue": "纯色 (color)",
+      "description": "选择背景的渲染方式"
+    },
+    {
+      "key": "bg_color",
+      "label": "背景颜色",
+      "type": "string",
+      "defaultValue": "#0f172a",
+      "description": "纯色模式下生效，支持 HEX / RGB / 任意 CSS 颜色值"
+    },
+    {
+      "key": "bg_image_url",
+      "label": "背景图片链接",
+      "type": "string",
+      "defaultValue": "",
+      "description": "图片模式下生效，填写 HTTPS 直链地址（留空则回退为背景颜色）"
+    },
+    {
+      "key": "bg_gradient",
+      "label": "渐变样式",
+      "type": "string",
+      "defaultValue": "linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)",
+      "description": "渐变模式下生效，填写 CSS background 渐变值"
+    },
+    {
+      "key": "bg_opacity",
+      "label": "背景透明度 (0-100)",
+      "type": "number",
+      "defaultValue": 100,
+      "description": "数值越小背景越透明"
+    },
+    {
+      "key": "bg_blur",
+      "label": "背景模糊 (px)",
+      "type": "number",
+      "defaultValue": 0,
+      "description": "大于 0 时对背景应用高斯模糊，建议配合图片背景使用"
+    },
+    {
+      "key": "enable_notice",
+      "label": "启用公告挂件",
+      "type": "bool",
+      "defaultValue": true,
+      "description": "开启后在页面展示公告卡片"
+    },
+    {
+      "key": "notice_title",
+      "label": "公告标题",
+      "type": "string",
+      "defaultValue": "📢 站点公告",
+      "description": "公告卡片顶部显示的标题"
+    },
+    {
+      "key": "notice_content",
+      "label": "公告内容",
+      "type": "text",
+      "defaultValue": "欢迎访问 OpenListNext！\n这里可以填写自定义公告内容，支持多行文本。",
+      "description": "支持多行文本"
+    },
+    {
+      "key": "notice_position",
+      "label": "公告显示位置",
+      "type": "select",
+      "options": [
+        "右上角 (top-right)",
+        "左上角 (top-left)",
+        "顶部居中 (top-center)",
+        "右下角 (bottom-right)",
+        "左下角 (bottom-left)"
+      ],
+      "defaultValue": "右上角 (top-right)",
+      "description": "设置公告卡片的贴边显示位置"
+    }
+  ],
+  "config_values": {
+    "enable_background": true,
+    "bg_type": "纯色 (color)",
+    "bg_color": "#0f172a",
+    "bg_image_url": "",
+    "bg_gradient": "linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)",
+    "bg_opacity": 100,
+    "bg_blur": 0,
+    "enable_notice": true,
+    "notice_title": "📢 站点公告",
+    "notice_content": "欢迎访问 OpenListNext！\n这里可以填写自定义公告内容，支持多行文本。",
+    "notice_position": "右上角 (top-right)"
+  }
+}
