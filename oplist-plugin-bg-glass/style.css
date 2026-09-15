@@ -13,3 +13,23 @@
 /* 说明：导航栏 (.header/.nav) 与卡片 ([data-oplist-glass]) 的
    背景色、透明度、模糊半径均由 index.js 根据后台配置动态生成，
    通过 CSS 变量 --oplist-nav-* / --oplist-card-* 控制。 */
+
+/* ============ 滚动条美化（与毛玻璃风格统一） ============ */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgba(128, 138, 158, 0.35);
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 138, 158, 0.55);
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(128, 138, 158, 0.35) transparent;
+}
