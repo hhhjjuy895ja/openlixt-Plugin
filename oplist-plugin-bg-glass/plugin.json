@@ -1,7 +1,7 @@
 {
   "id": "oplist-plugin-bg-glass",
   "name": "自定义背景与毛玻璃",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "为 OpenListNext 页面自定义背景（纯色 / 图片 / 渐变，支持透明度与模糊），并可为原有卡片与顶部导航栏一键套用毛玻璃（透明度 + 模糊）效果。",
   "author": "OpenListDev",
   "homepage": "https://openlistnext.org",

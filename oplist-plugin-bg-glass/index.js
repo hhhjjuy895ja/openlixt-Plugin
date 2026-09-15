@@ -136,6 +136,23 @@
     })
   }
 
+  /* 交互兜底：点击 / 聚焦等事件后立即重新标记，
+     弥补 SPA 渲染时序造成的观察器漏标 */
+  function scheduleMark() {
+    if (glassObserver === null) return
+    window.requestAnimationFrame(markCards)
+  }
+
+  function bindInteractionHeal() {
+    document.addEventListener("pointerdown", scheduleMark, true)
+    document.addEventListener("click", scheduleMark, true)
+    document.addEventListener("focusin", scheduleMark, true)
+    // 周期自愈：兜底任何异常时序导致的漏标
+    window.setInterval(function () {
+      if (document.visibilityState !== "hidden") markCards()
+    }, 1500)
+  }
+
   /* 用户额外指定的选择器（兜底自动识别遗漏的元素） */
   function customSelectorCss() {
     const sels = String(config.custom_selectors || "")
@@ -148,7 +165,7 @@
     const join = sels.join(", ")
     return (
       join +
-      " { background-color: var(--oplist-card-bg-light) !important; backdrop-filter: blur(var(--oplist-card-blur)) !important; -webkit-backdrop-filter: blur(var(--oplist-card-blur)) !important; }" +
+      " { background-color: var(--oplist-card-bg-light) !important; backdrop-filter: blur(var(--oplist-card-blur)) saturate(1.35) !important; -webkit-backdrop-filter: blur(var(--oplist-card-blur)) saturate(1.35) !important; }" +
       "@media (prefers-color-scheme: dark) { " +
       join +
       " { background-color: var(--oplist-card-bg-dark) !important; } }"
@@ -164,11 +181,14 @@
         background-color: var(--oplist-nav-bg-light) !important;
         backdrop-filter: blur(var(--oplist-nav-blur)) !important;
         -webkit-backdrop-filter: blur(var(--oplist-nav-blur)) !important;
+        /* 透明导航栏下保证文字图标可读 */
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
       }
       [${GLASS_ATTR}="true"] {
         background-color: var(--oplist-card-bg-light) !important;
-        backdrop-filter: blur(var(--oplist-card-blur)) !important;
-        -webkit-backdrop-filter: blur(var(--oplist-card-blur)) !important;
+        backdrop-filter: blur(var(--oplist-card-blur)) saturate(1.35) !important;
+        -webkit-backdrop-filter: blur(var(--oplist-card-blur)) saturate(1.35) !important;
+        transition: background-color 0.25s ease !important;
       }
       /* 渐变背景的卡片清除图片层，使透明度真正生效 */
       [${GLASS_BG_ATTR}="true"] { background-image: none !important; }
@@ -221,6 +241,8 @@
     // 首次渲染可能晚于插件加载，延迟一轮后再标记一次
     window.setTimeout(markCards, 0)
     window.setTimeout(markCards, 500)
+    // 交互即时补标 + 周期自愈
+    bindInteractionHeal()
   }
 
   /* ============ 启动插件 ============ */
