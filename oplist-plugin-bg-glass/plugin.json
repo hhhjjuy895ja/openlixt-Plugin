@@ -1,16 +1,16 @@
 {
-  "id": "oplist-plugin-bg-notice",
-  "name": "自定义背景与公告",
-  "version": "1.0.0",
-  "description": "为 OpenListNext 页面自定义背景（纯色 / 图片 / 渐变，支持透明度与模糊），并在页面上展示可关闭的公告通知挂件。",
+  "id": "oplist-plugin-bg-glass",
+  "name": "自定义背景与毛玻璃",
+  "version": "1.1.0",
+  "description": "为 OpenListNext 页面自定义背景（纯色 / 图片 / 渐变，支持透明度与模糊），并可为原有卡片与顶部导航栏一键套用毛玻璃（透明度 + 模糊）效果。",
   "author": "OpenListDev",
   "homepage": "https://openlistnext.org",
-  "repository": "https://github.com/openlistnext/plugin-bg-notice",
+  "repository": "https://github.com/openlistnext/plugin-bg-glass",
   "type": "ui",
   "enabled": true,
   "high_privilege": false,
   "permissions": ["dom:inject"],
-  "tags": ["主题", "背景", "公告", "美化", "UI"],
+  "tags": ["主题", "背景", "毛玻璃", "美化", "UI"],
   "config_schema": [
     {
       "key": "enable_background",
@@ -53,7 +53,7 @@
       "label": "背景透明度 (0-100)",
       "type": "number",
       "defaultValue": 100,
-      "description": "数值越小背景越透明"
+      "description": "背景层整体透明度，数值越小越透明"
     },
     {
       "key": "bg_blur",
@@ -63,39 +63,39 @@
       "description": "大于 0 时对背景应用高斯模糊，建议配合图片背景使用"
     },
     {
-      "key": "enable_notice",
-      "label": "启用公告挂件",
+      "key": "enable_panel",
+      "label": "启用界面毛玻璃",
       "type": "bool",
       "defaultValue": true,
-      "description": "开启后在页面展示公告卡片"
+      "description": "为顶部导航栏与原有卡片套用毛玻璃效果（透明度 + 模糊）"
     },
     {
-      "key": "notice_title",
-      "label": "公告标题",
-      "type": "string",
-      "defaultValue": "📢 站点公告",
-      "description": "公告卡片顶部显示的标题"
+      "key": "nav_opacity",
+      "label": "导航栏透明度 (0-100)",
+      "type": "number",
+      "defaultValue": 60,
+      "description": "顶部导航栏背景不透明度，数值越小越透"
     },
     {
-      "key": "notice_content",
-      "label": "公告内容",
-      "type": "text",
-      "defaultValue": "欢迎访问 OpenListNext！\n这里可以填写自定义公告内容，支持多行文本。",
-      "description": "支持多行文本"
+      "key": "nav_blur",
+      "label": "导航栏模糊 (px)",
+      "type": "number",
+      "defaultValue": 12,
+      "description": "顶部导航栏背景高斯模糊半径"
     },
     {
-      "key": "notice_position",
-      "label": "公告显示位置",
-      "type": "select",
-      "options": [
-        "右上角 (top-right)",
-        "左上角 (top-left)",
-        "顶部居中 (top-center)",
-        "右下角 (bottom-right)",
-        "左下角 (bottom-left)"
-      ],
-      "defaultValue": "右上角 (top-right)",
-      "description": "设置公告卡片的贴边显示位置"
+      "key": "card_opacity",
+      "label": "卡片透明度 (0-100)",
+      "type": "number",
+      "defaultValue": 60,
+      "description": "页面原有卡片背景不透明度，数值越小越透"
+    },
+    {
+      "key": "card_blur",
+      "label": "卡片模糊 (px)",
+      "type": "number",
+      "defaultValue": 12,
+      "description": "页面原有卡片背景高斯模糊半径"
     }
   ],
   "config_values": {
@@ -106,9 +106,10 @@
     "bg_gradient": "linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)",
     "bg_opacity": 100,
     "bg_blur": 0,
-    "enable_notice": true,
-    "notice_title": "📢 站点公告",
-    "notice_content": "欢迎访问 OpenListNext！\n这里可以填写自定义公告内容，支持多行文本。",
-    "notice_position": "右上角 (top-right)"
+    "enable_panel": true,
+    "nav_opacity": 60,
+    "nav_blur": 12,
+    "card_opacity": 60,
+    "card_blur": 12
   }
 }
