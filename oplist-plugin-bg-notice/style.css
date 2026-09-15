@@ -1,0 +1,104 @@
+/* ============ 自定义背景层 ============ */
+.oplist-bg-notice-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -1; /* 位于页面内容之下、浏览器窗口画布之上 */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  pointer-events: none; /* 不拦截任何鼠标事件 */
+}
+
+/* ============ 公告挂件 ============ */
+.oplist-notice-container {
+  position: fixed;
+  z-index: 999;
+  max-width: 320px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.oplist-notice-top-right    { top: 16px; right: 16px; }
+.oplist-notice-top-left     { top: 16px; left: 16px; }
+.oplist-notice-top-center   { top: 16px; left: 50%; transform: translateX(-50%); }
+.oplist-notice-bottom-right { bottom: 16px; right: 16px; }
+.oplist-notice-bottom-left  { bottom: 16px; left: 16px; }
+
+.oplist-notice-card {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.12),
+    0 8px 10px -6px rgba(0, 0, 0, 0.05);
+}
+
+.oplist-notice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.oplist-notice-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.oplist-notice-close {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+  color: #6b7280;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.oplist-notice-close:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: #111827;
+}
+
+.oplist-notice-body {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #374151;
+  white-space: pre-line; /* 保留多行换行 */
+  word-break: break-word;
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .oplist-notice-card {
+    background: rgba(24, 24, 28, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+  }
+  .oplist-notice-title { color: #f3f4f6; }
+  .oplist-notice-body  { color: #d1d5db; }
+  .oplist-notice-close { color: #9ca3af; }
+}
+
+/* 移动端适配：公告卡片自动占满左右边距，防止遮挡操作按钮 */
+@media (max-width: 640px) {
+  .oplist-notice-container {
+    left: 12px !important;
+    right: 12px !important;
+    transform: none !important;
+    max-width: none;
+  }
+  .oplist-notice-top-left,
+  .oplist-notice-top-right,
+  .oplist-notice-top-center { top: 12px; }
+
+  .oplist-notice-bottom-left,
+  .oplist-notice-bottom-right { bottom: 12px; }
+}
